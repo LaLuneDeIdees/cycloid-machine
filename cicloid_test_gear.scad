@@ -1,0 +1,34 @@
+/*count=100;
+R=100;
+d=R/(1+1/count*0.3);
+r=d/count;
+h=r*0.7;
+m=r/d;
+pol1=0.3;
+pol2=20;*/
+//gear(100,true,0.8);
+module gear(count, bul=true,hd=1,dc=1,R=10,pol1=0.09,pol2=4){
+k=0.7;
+r=R/(1+1/60*(1-k))/60;
+d=r*count;
+echo(r);
+h=r*k;
+m=r/d;
+//pol1=0.1;
+//pol2=4;
+    difference(){
+linear_extrude(height=hd,center=true,slices=1,convexity=10)
+if(bul){
+polygon([
+for(t=[0:360*d/r*pol1])
+    [d*(m+1)*cos(t/pol1*m)-h*cos((m+1)*t/pol1),d*(m+1)*sin(t/pol1*m)-h*sin((m+1)*t/pol1)]
+]);
+}else{
+    polygon([
+for(t=[0:1:360*pol2])
+    [(d-r)*cos(t/pol2)+h*cos((d-r)/r*t/pol2),(d-r)*sin(t/pol2)-h*sin((d-r)/r*t/pol2)]
+]);
+}
+cylinder(h=hd+2,d1=dc,d2=dc,$fn=100,center=true);
+}
+}
